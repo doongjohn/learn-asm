@@ -151,7 +151,7 @@ _input_is_num:
   c_printf
 
 _main_end:
-  mov	rax, 0 ; rax is a return value
+  mov rax, 0 ; rax is a return value
   ret
 
 ; arguments
