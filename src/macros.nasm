@@ -110,3 +110,67 @@ section .text
   mov rsp, rbp
   pop rbp
 %endmacro
+
+%macro print_int 1
+  push rbp
+  mov rbp, rsp
+
+  push rax
+  mov rax, %1 ; the number to print
+
+  push r8
+  mov r8, 0 ; index
+
+  push r9
+  mov r9, 0 ; sign
+
+  inc r8 ; increase index
+
+  bt rax, 63 ; check sign bit it sets the cflag
+  ; btr rax, 63
+  jnc %%loop ; is positive
+  mov r9, 1
+  mov rbx, -1
+  mul rbx ; rax * -1
+
+%%loop:
+  inc r8 ; increase index
+
+  mov rdx, 0 ; if rdx is not zero then it will be concated with rax when the div is called
+  mov rbx, 10
+  div rbx ; this will do (rax = rax / rbx)
+  ; quotient is stored in the `rax`
+  ; remainder is stored in the `rdx`
+
+  sub rsp, 1 ; allocate 1 byte in the stack
+  ; more about stack allocation:
+  ; https://stackoverflow.com/questions/1018853/why-is-the-use-of-alloca-not-considered-good-practice
+  ; https://www.reddit.com/r/cpp_questions/comments/dui3de/why_are_stack_frames_fixed_size/
+  mov byte [rsp], dl
+  add byte [rsp], '0'
+
+  cmp rax, 0
+  jne %%loop
+  ; end of loop
+
+  cmp r9, 0
+  je %%write_num
+  ; if negetive add '-'
+  sub rsp, 1 ; allocate 1 byte in the stack
+  mov byte [rsp], '-'
+
+%%write_num
+  ; write number
+  mov rsi, rsp ; rsi: ptr
+  mov rdx, r8
+  write
+
+  ; restore state
+  pop r9
+  pop r8
+  pop rax
+
+  ; restore stack pointer
+  mov rsp, rbp
+  pop rbp
+%endmacro

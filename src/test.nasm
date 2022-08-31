@@ -8,11 +8,10 @@ section .text
   global _start
 
 _start:
-  mov rsi, hello
-  mov rdx, hello_len
-  write
+  print_int 123
+  print_newline
 
-  print_uint 456123
+  print_int -123
   print_newline
 
   exit 0
