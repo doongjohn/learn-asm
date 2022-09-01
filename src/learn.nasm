@@ -3,9 +3,16 @@
 ; [plat]: linux
 
 ; TODO: learn about heap
-; TODO: learn about padding https://reverseengineering.stackexchange.com/questions/4084/why-ther-are-some-many-padding-leading-nop-instructions-in-my-binary-code
-; TODO: learn about macro https://stackoverflow.com/questions/49541502/basics-of-assembly-programming-in-64-bit-nasm-programming
-; TODO: make a simple game
+; TODO: learn about floating point number
+; TODO: learn about smid
+; TODO: learn about file read write
+; TODO: learn about multi-threading
+; TODO: learn about nasm macro https://stackoverflow.com/questions/49541502/basics-of-assembly-programming-in-64-bit-nasm-programming
+; TODO: implement software renderer
+
+; why use nop
+; https://electronics.stackexchange.com/questions/173216/why-do-we-need-the-nop-i-e-no-operation-instruction-in-microprocessor-8085
+; https://reverseengineering.stackexchange.com/questions/4084/why-ther-are-some-many-padding-leading-nop-instructions-in-my-binary-code
 
 ; yasm and nasm
 ; http://www.tortall.net/projects/yasm/manual/html/index.html
