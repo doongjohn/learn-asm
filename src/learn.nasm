@@ -51,6 +51,9 @@
 ; https://soliduscode.com/nasm-x64-c-calling-convention/
 ; https://www.mourtada.se/calling-printf-from-the-c-standard-library-in-assembly/
 
+; about pusha
+; https://stackoverflow.com/questions/6837392/how-to-save-the-registers-on-x86-64-for-an-interrupt-service-routine
+
 ; tutorials
 ; https://www.youtube.com/playlist?list=PLetF-YjXm-sCH6FrTz4AQhfH6INDQvQSn
 ; https://www.youtube.com/watch?v=5eWiz3soaEM

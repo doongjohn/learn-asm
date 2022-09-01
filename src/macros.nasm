@@ -126,10 +126,9 @@ section .text
 
   inc r8 ; increase index
 
-  bt rax, 63 ; check sign bit it sets the cflag
-  ; btr rax, 63
+  bt rax, 63 ; check sign bit and set the cflag
   jnc %%loop ; is positive
-  mov r9, 1
+  mov r9, 1 ; is negative
   mov rbx, -1
   mul rbx ; rax * -1
 
@@ -153,9 +152,9 @@ section .text
   jne %%loop
   ; end of loop
 
-  cmp r9, 0
+  cmp r9, 0 ; check sign
   je %%write_num
-  ; if negetive add '-'
+  ; if negative add '-'
   sub rsp, 1 ; allocate 1 byte in the stack
   mov byte [rsp], '-'
 
