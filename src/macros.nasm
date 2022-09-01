@@ -129,8 +129,10 @@ section .text
   bt rax, 63 ; check sign bit and set the cflag
   jnc %%loop ; is positive
   mov r9, 1 ; is negative
-  mov rbx, -1
-  mul rbx ; rax * -1
+  ; convert the value to positive number
+  ; two's complement
+  not rax
+  inc rax
 
 %%loop:
   inc r8 ; increase index
