@@ -66,21 +66,22 @@
 ; https://www.youtube.com/watch?v=5eWiz3soaEM
 ; https://www.youtube.com/playlist?list=PLmxT2pVYo5LB5EzTPZGfFN0c2GDiSXgQe
 
+newline equ 10
 
 ; initialized const global variables are stored in data
 ; these data occupy file storage space and ROM
 section .rodata
-  prompt_msg: db "input a number: "
+  prompt_msg db "input a number: "
   prompt_len equ $ - prompt_msg ; https://stackoverflow.com/questions/57746534/how-equ-instruction-get-the-length-of-a-string-in-nasm-syntax
   ; equ is like #define in c
   ; https://stackoverflow.com/questions/8006711/whats-the-difference-between-equ-and-db-in-nasm
 
-  prompt_msg2: db "it is not a number", 10
+  prompt_msg2 db "it is not a number", newline
   prompt_len2 equ $ - prompt_msg2
 
-  fmtstr1: db "%d%c", 0
-  fmtstr2: db "%d successful conversion happend", 10, 0
-  fmtstr3: db "number = %d", 10, 0
+  fmtstr1 db "%d%c", 0
+  fmtstr2 db "%d conversion happend", newline, 0
+  fmtstr3 db "number = %d", newline, 0
 
 ; initialized non-const global variables are stored in data
 ; these data occupy the file storage space and the RAM
@@ -101,7 +102,7 @@ section .text
   extern printf
   extern scanf
 
-; arguments
+; args
 ; rdi, fmtstr  (ptr)
 ; rsi, fmtarg1 (val)
 ; rdx, fmtarg2 (val)
@@ -112,7 +113,7 @@ section .text
   pop rbp
 %endmacro
 
-; arguments
+; args
 ; rdi, fmtstr  (ptr)
 ; rsi, fmtarg1 (ptr)
 ; rdx, fmtarg2 (ptr)
@@ -123,51 +124,50 @@ section .text
   pop rbp
 %endmacro
 
-main:
+main
   mov rsi, prompt_msg
   mov rdx, prompt_len
-  call write
+  call sys_write
 
-  mov rdi, fmtstr1
+  mov rdi, fmtstr1 ; "%d%c" reads a number and a trailing character
   mov rsi, input_num
   mov rdx, input_whitespace
   c_scanf
-  push rax
+  push rax ; result of scanf
 
   mov rdi, fmtstr2
-  mov rsi, rax ; dereference pointer
+  mov rsi, rax
   c_printf
 
   pop rax
-  mov rcx, rax
 
   ; if rax == 2 && (rcx == ' ' || rcx == '\n')
-  sub rcx, 2
+  mov rcx, 0
   xor rcx, [input_whitespace]
   cmp rcx, ' '
-  je _input_is_num
-  cmp rcx, 10
-  je _input_is_num
+  je _input_is_number
+  cmp rcx, newline
+  je _input_is_number
 
   ; input is not num
   mov rsi, prompt_msg2
   mov rdx, prompt_len2
-  call write
-  jmp _main_end
+  call sys_write
+  jmp _main_return
 
-_input_is_num:
+_input_is_number
   mov rdi, fmtstr3
   mov rsi, [input_num] ; dereference pointer
   c_printf
 
-_main_end:
+_main_return
   mov rax, 0 ; rax is a return value
   ret
 
-; arguments
+; args
 ; mov rsi, msg (ptr)
 ; mov rdx, len (ptr)
-write:
+sys_write
   mov rax, 1 ; syscall id
   mov rdi, 1 ; file descriptor
   syscall
