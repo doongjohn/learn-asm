@@ -79,6 +79,7 @@ section .rodata
   prompt_msg2 db "it is not a number", newline
   prompt_len2 equ $ - prompt_msg2
 
+  ; white space in scanf fmtstr https://stackoverflow.com/questions/18491390/difference-between-scanfc-c-and-scanf-c-c
   fmtstr1 db "%d%c", 0
   fmtstr2 db "%d conversion happend", newline, 0
   fmtstr3 db "number = %d", newline, 0
