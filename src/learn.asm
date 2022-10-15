@@ -49,6 +49,9 @@
 ; instruction: lea
 ; https://stackoverflow.com/questions/1658294/whats-the-purpose-of-the-lea-instruction
 
+; instruction: mul
+; https://stackoverflow.com/questions/40893026/mul-function-in-assembly
+
 ; instruction: div
 ; https://www.youtube.com/watch?v=XuUD0WQ9kaE&list=PLetF-YjXm-sCH6FrTz4AQhfH6INDQvQSn&index=8
 
