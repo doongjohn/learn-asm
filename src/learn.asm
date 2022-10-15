@@ -2,13 +2,14 @@
 ; [arch]: x64 (nasm)
 ; [plat]: linux
 
-; TODO: learn about heap
 ; TODO: learn about floating point number
-; TODO: learn about smid
-; TODO: learn about file read write
+; TODO: learn about heap allocation
+; TODO: learn about file io
+; TODO: learn about network io
 ; TODO: learn about multi-threading
-; TODO: learn about nasm macro https://stackoverflow.com/questions/49541502/basics-of-assembly-programming-in-64-bit-nasm-programming
-; TODO: implement software renderer
+; TODO: learn about SIMD
+; TODO: learn about nasm macro
+;       https://stackoverflow.com/questions/49541502/basics-of-assembly-programming-in-64-bit-nasm-programming
 
 ; why use nop
 ; https://electronics.stackexchange.com/questions/173216/why-do-we-need-the-nop-i-e-no-operation-instruction-in-microprocessor-8085
@@ -17,6 +18,9 @@
 ; yasm and nasm
 ; http://www.tortall.net/projects/yasm/manual/html/index.html
 ; https://nasm.us/doc/nasmdoc4.html
+
+; nasm label syntax
+; https://stackoverflow.com/questions/17913264/assembly-programming-variables-defined-using-what-looks-like-labels-or-va
 
 ; x86_64 cheat sheet
 ; https://www.cs.uaf.edu/2017/fall/cs301/reference/x86_64.html
@@ -66,42 +70,50 @@
 ; https://www.youtube.com/watch?v=5eWiz3soaEM
 ; https://www.youtube.com/playlist?list=PLmxT2pVYo5LB5EzTPZGfFN0c2GDiSXgQe
 
+
+; equ is like define in c
+; https://stackoverflow.com/questions/8006711/whats-the-difference-between-equ-and-db-in-nasm
 newline equ 10
+
 
 ; initialized const global variables are stored in data
 ; these data occupy file storage space and ROM
 section .rodata
-  prompt_msg db "input a number: "
-  prompt_len equ $ - prompt_msg ; https://stackoverflow.com/questions/57746534/how-equ-instruction-get-the-length-of-a-string-in-nasm-syntax
-  ; equ is like #define in c
-  ; https://stackoverflow.com/questions/8006711/whats-the-difference-between-equ-and-db-in-nasm
+prompt_msg1 db "input a number: "
+prompt_len equ $ - prompt_msg1 ; https://stackoverflow.com/questions/57746534/how-equ-instruction-get-the-length-of-a-string-in-nasm-syntax
 
-  prompt_msg2 db "it is not a number", newline
-  prompt_len2 equ $ - prompt_msg2
+prompt_msg2 db "it is not a number", newline
+prompt_len2 equ $ - prompt_msg2
 
-  ; white space in scanf fmtstr https://stackoverflow.com/questions/18491390/difference-between-scanfc-c-and-scanf-c-c
-  fmtstr1 db "%d%c", 0
-  fmtstr2 db "%d conversion happend", newline, 0
-  fmtstr3 db "number = %d", newline, 0
+; white space in scanf fmtstr https://stackoverflow.com/questions/18491390/difference-between-scanfc-c-and-scanf-c-c
+fmtstr1 db "%d%c", 0
+fmtstr2 db "%d conversion happend", newline, 0
+fmtstr3 db "number = %d", newline, 0
+
 
 ; initialized non-const global variables are stored in data
 ; these data occupy the file storage space and the RAM
 section .data
 
+
 ; uninitialized non-const global variables are stored in the bss memory
 ; these data do not occupy file storage space but only occupy the RAM
 section .bss
-  input_num: resb 8
-  input_whitespace: resb 8
+; Your application's executable file(ELF) has a BSS section's size information,
+; when it starts up, kernel allocate a block of memory for BSS section, and clean it to 0
+input_num resb 8
+input_whitespace resb 8
+
 
 section .text
-  global main ; global means it is accessible to the linker
-  ; _start is a default entry point for the ld linker
-  ; but it needs to be main because I'm going to use clang to link this program with libc
+; "_start" is a default entry point for the ld linker
+; but for this program the entry point needs to be "main" because
+; I'm going to use clang or gcc to link this program with the libc
+global main ; global means this symbol is accessible to the linker
 
-  ; this is possible becuase I will link this program with the libc
-  extern printf
-  extern scanf
+; libc functions
+extern printf ; libc printf
+extern scanf  ; libc scanf
 
 ; args
 ; rdi, fmtstr  (ptr)
@@ -126,7 +138,7 @@ section .text
 %endmacro
 
 main
-  mov rsi, prompt_msg
+  mov rsi, prompt_msg1
   mov rdx, prompt_len
   call sys_write
 

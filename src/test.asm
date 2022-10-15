@@ -1,4 +1,4 @@
-%include "macros.nasm"
+%include "macros.asm"
 
 section .rodata
   hello: db "Hello, world!", 10

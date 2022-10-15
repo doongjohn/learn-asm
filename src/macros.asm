@@ -6,12 +6,12 @@ SYS_READ equ 0
 SYS_WRITE equ 1
 SYS_EXIT equ 60
 
+
 section .rodata
   newline: db 10
 
-section .text
 
-%macro exit 1
+%macro sys_exit 1
   mov rax, SYS_EXIT
   mov rdi, %1
   syscall
@@ -19,7 +19,7 @@ section .text
 
 ; mov rsi, text
 ; mov rdx, text_length
-%macro write 0
+%macro sys_write 0
   mov rax, STDOUT
   mov rdi, SYS_WRITE
   syscall
@@ -36,7 +36,7 @@ section .text
 
   mov rsi, rsp ; rsi: ptr
   mov rdx, 1
-  write
+  sys_write
 
   ; these three lines of code is called
   ; epilogue of the function
@@ -55,7 +55,7 @@ section .text
   mov rsi, rsp ; rsi: ptr
   add byte [rsi], '0' ; '0' == 48 add 48
   mov rdx, 1
-  write
+  sys_write
 
   mov rsp, rbp
   pop rbp
@@ -64,7 +64,7 @@ section .text
 %macro print_newline 0
   mov rsi, newline
   mov rdx, 1
-  write
+  sys_write
 %endmacro
 
 %macro print_uint 1
@@ -80,7 +80,7 @@ section .text
 %%loop:
   inc r8 ; increase index
 
-  mov rdx, 0 ; if rdx is not zero then it will be concated with rax when the div is called
+  mov rdx, 0 ; if rdx is not zero then it will be concated with rax when `div` is called
   mov rbx, 10
   div rbx ; this will do (rax = rax / rbx)
   ; quotient is stored in the `rax`
@@ -100,7 +100,7 @@ section .text
   ; write number
   mov rsi, rsp ; rsi: ptr
   mov rdx, r8
-  write
+  sys_write
 
   ; restore state
   pop r8
@@ -164,7 +164,7 @@ section .text
   ; write number
   mov rsi, rsp ; rsi: ptr
   mov rdx, r8
-  write
+  sys_write
 
   ; restore state
   pop r9
