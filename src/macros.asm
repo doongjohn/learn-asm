@@ -1,6 +1,6 @@
-STDIN equ 0
-STDOUT equ 1
-STDERR equ 2
+FD_STDIN equ 0
+FD_STDOUT equ 1
+FD_STDERR equ 2
 
 SYS_READ equ 0
 SYS_WRITE equ 1
@@ -8,7 +8,9 @@ SYS_EXIT equ 60
 
 
 section .rodata
-  newline: db 10
+  newline db 10
+  seq_clear db "", 0x1b, "[H", 0x1b, "[J" ; https://stackoverflow.com/a/50482672
+  seq_clear_len equ $ - seq_clear
 
 
 %macro sys_exit 1
@@ -18,10 +20,20 @@ section .rodata
 %endmacro
 
 
+; args
+; mov rsi, cmd
+; mov rdx, arg (ptr)
+%macro sys_ioctl 0
+  mov rax, 16 ; syscall id
+  mov rdi, FD_STDOUT
+  syscall
+%endmacro
+
+
 ; mov rsi, text
 ; mov rdx, text_length
 %macro sys_write 0
-  mov rax, STDOUT
+  mov rax, FD_STDOUT
   mov rdi, SYS_WRITE
   syscall
 %endmacro
@@ -55,7 +67,7 @@ section .rodata
 
   mov byte [rsp], %1
 
-  mov rsi, rsp ; rsi: ptr
+  mov rsi, rsp ; rsi (ptr)
   add byte [rsi], '0' ; '0' == 48 add 48
   mov rdx, 1
   sys_write
@@ -142,31 +154,38 @@ section .rodata
 
   push r9
   mov r9, 0 ; sign
+            ; 0 => positive
+            ; 1 => negative
 
   inc r8 ; increase index
 
   bt rax, 63 ; check sign bit and set the cflag
-  jnc %%loop ; is positive
-  mov r9, 1 ; is negative
+  jnc %%rax_is_now_positive ; rax is positive
+  mov r9, 1 ; rax is negative
   ; convert the value to positive number
   ; two's complement
   not rax
   inc rax
 
-%%loop:
-  ; create bit mask
+%%rax_is_now_positive
+  ; save state
   push rax
+  push rcx; cl
+  ; create bit mask
   mov al, 8
   sub al, %1
   mov cl, 8
   mul cl
   mov cl, al
+  ; restore state
+  pop rcx
   pop rax
   mov rdx, 0xffffffffffffffff
   shr rdx, cl
   ; remove unwanted bits
   and rax, rdx
 
+%%loop
   inc r8 ; increase index
 
   mov rdx, 0 ; if rdx is not zero then it will be concated with rax when the div is called
@@ -206,4 +225,21 @@ section .rodata
   ; restore stack pointer
   mov rsp, rbp
   pop rbp
+%endmacro
+
+
+%macro term_clear 0
+  mov rsi, seq_clear
+  mov rdx, seq_clear_len
+  sys_write
+%endmacro
+
+
+%macro term_gotoxy 2
+  print_char 0x1b
+  print_char '['
+  print_uint 8, %2
+  print_char ';'
+  print_uint 8, %1
+  print_char 'f'
 %endmacro
