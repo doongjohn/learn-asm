@@ -24,9 +24,21 @@
 
 ; x86_64 cheat sheet
 ; https://www.cs.uaf.edu/2017/fall/cs301/reference/x86_64.html
+; https://gist.github.com/justinian/385c70347db8aca7ba93e87db90fc9a6
+; https://stackoverflow.com/questions/44860003/how-many-bytes-do-resb-resw-resd-resq-allocate-in-nasm
+
+; c types size
+; https://melonicedlatte.com/algorithm/2018/03/04/022437.html
+
+; c calling convention
+; https://soliduscode.com/nasm-x64-c-calling-convention/
+; https://www.mourtada.se/calling-printf-from-the-c-standard-library-in-assembly/
 
 ; all x86 instructions
 ; https://www.felixcloutier.com/x86/index.html
+
+; all linux syscalls
+; https://filippo.io/linux-syscall-table/
 
 ; initial state of registers
 ; https://stackoverflow.com/questions/9147455/what-is-the-default-register-state-when-program-launches-asm-linux
@@ -43,9 +55,6 @@
 ; instruction: je, jz, jne, jnz
 ; https://stackoverflow.com/questions/14267081/difference-between-je-jne-and-jz-jnz
 
-; list of linux syscalls
-; https://filippo.io/linux-syscall-table/
-
 ; return value of syscall and function is stored in `rax`
 ; https://stackoverflow.com/questions/38751614/what-are-the-return-values-of-system-calls-in-assembly
 
@@ -57,10 +66,6 @@
 
 ; about cacheline
 ; https://stackoverflow.com/questions/39971639/what-does-cacheline-aligned-mean
-
-; c calling convention
-; https://soliduscode.com/nasm-x64-c-calling-convention/
-; https://www.mourtada.se/calling-printf-from-the-c-standard-library-in-assembly/
 
 ; about pusha
 ; https://stackoverflow.com/questions/6837392/how-to-save-the-registers-on-x86-64-for-an-interrupt-service-routine

@@ -9,7 +9,7 @@ SYS_EXIT equ 60
 
 section .rodata
   newline db 10
-  seq_clear db "", 0x1b, "[H", 0x1b, "[J" ; https://stackoverflow.com/a/50482672
+  seq_clear db 0x1b, "[H", 0x1b, "[J" ; https://stackoverflow.com/a/50482672
   seq_clear_len equ $ - seq_clear
 
 
@@ -36,6 +36,30 @@ section .rodata
   mov rax, FD_STDOUT
   mov rdi, SYS_WRITE
   syscall
+%endmacro
+
+
+%macro print_strlit 1
+section .rodata
+  %%str db %1
+  %strlen %%len %1
+
+section .text
+  mov rsi, %%str
+  mov rdx, %%len
+  sys_write
+%endmacro
+
+
+%macro println_strlit 1
+section .rodata
+  %%str db %1, 10
+  %strlen %%len %1
+
+section .text
+  mov rsi, %%str
+  mov rdx, %%len + 1
+  sys_write
 %endmacro
 
 

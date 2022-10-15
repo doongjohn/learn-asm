@@ -23,18 +23,6 @@ winsize resb st_winsize_size
 ;   iend
 
 
-section .rodata
-str_width db "terminal width = "
-str_width_len equ $ - str_width
-
-str_height db "terminal height = "
-str_height_len equ $ - str_height
-
-str_esc db "", 0x1b
-str_test db "", 0x1b, "[10;10f"
-str_test_len equ $ - str_test
-
-
 ; TODO: get keyboard input and move character
 section .text
 global _start
@@ -47,17 +35,11 @@ _start
   term_clear
   term_gotoxy 0, 0
 
-  mov rsi, str_width
-  mov rdx, str_width_len
-  sys_write
-
+  print_strlit "terminal weight = "
   print_uint 2, [winsize + st_winsize.ws_col]
   print_newline
 
-  mov rsi, str_height
-  mov rdx, str_height_len
-  sys_write
-
+  print_strlit "terminal height = "
   print_uint 2, [winsize + st_winsize.ws_row]
   print_newline
 
