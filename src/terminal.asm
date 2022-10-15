@@ -35,6 +35,7 @@ str_test db "", 0x1b, "[10;10f"
 str_test_len equ $ - str_test
 
 
+; TODO: get keyboard input and move character
 section .text
 global _start
 
