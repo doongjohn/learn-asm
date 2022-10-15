@@ -17,6 +17,7 @@ section .rodata
   syscall
 %endmacro
 
+
 ; mov rsi, text
 ; mov rdx, text_length
 %macro sys_write 0
@@ -24,6 +25,7 @@ section .rodata
   mov rdi, SYS_WRITE
   syscall
 %endmacro
+
 
 %macro print_char 1
   ; these three lines of code is called
@@ -45,6 +47,7 @@ section .rodata
   ; ret ; don't return in this case because this is a macro (not a call)
 %endmacro
 
+
 %macro print_digit 1
   push rbp
   mov rbp, rsp
@@ -61,18 +64,33 @@ section .rodata
   pop rbp
 %endmacro
 
+
 %macro print_newline 0
   mov rsi, newline
   mov rdx, 1
   sys_write
 %endmacro
 
-%macro print_uint 1
+
+%macro print_uint 2
   push rbp
   mov rbp, rsp
 
   push rax
-  mov rax, %1 ; the number to print
+  mov rax, %2 ; the number to print
+
+  ; create bit mask
+  push rax
+  mov al, 8
+  sub al, %1
+  mov cl, 8
+  mul cl
+  mov cl, al
+  pop rax
+  mov rdx, 0xffffffffffffffff
+  shr rdx, cl
+  ; remove unwanted bits
+  and rax, rdx
 
   push r8
   mov r8, 0 ; index
@@ -90,7 +108,7 @@ section .rodata
   ; more about stack allocation:
   ; https://stackoverflow.com/questions/1018853/why-is-the-use-of-alloca-not-considered-good-practice
   ; https://www.reddit.com/r/cpp_questions/comments/dui3de/why_are_stack_frames_fixed_size/
-  mov byte [rsp], dl
+  mov byte [rsp], dl ; dl = 8bit rdx
   add byte [rsp], '0'
 
   cmp rax, 0
@@ -111,12 +129,13 @@ section .rodata
   pop rbp
 %endmacro
 
-%macro print_int 1
+
+%macro print_int 2
   push rbp
   mov rbp, rsp
 
   push rax
-  mov rax, %1 ; the number to print
+  mov rax, %2 ; the number to print
 
   push r8
   mov r8, 0 ; index
@@ -135,6 +154,19 @@ section .rodata
   inc rax
 
 %%loop:
+  ; create bit mask
+  push rax
+  mov al, 8
+  sub al, %1
+  mov cl, 8
+  mul cl
+  mov cl, al
+  pop rax
+  mov rdx, 0xffffffffffffffff
+  shr rdx, cl
+  ; remove unwanted bits
+  and rax, rdx
+
   inc r8 ; increase index
 
   mov rdx, 0 ; if rdx is not zero then it will be concated with rax when the div is called

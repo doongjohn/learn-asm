@@ -10,12 +10,12 @@ section .text
 _start:
   mov rsi, hello
   mov rdx, hello_len
-  write
+  sys_write
 
-  print_int 123
+  print_int 8, 123
   print_newline
 
-  print_int -12310
+  print_int 8, -12310
   print_newline
 
-  exit 0
+  sys_exit 0

@@ -1,7 +1,7 @@
 %include "macros.asm"
 
 
-TIOCGWINSZ equ 21523 ; 0x5413
+TIOCGWINSZ equ 0x5413
 
 
 section .bss
@@ -12,7 +12,15 @@ struc st_winsize
   .ws_ypixel resw 1 ; unsigned short int ws_ypixel;
 endstruc
 
-winsize resb st_winsize_size
+winsize
+  istruc st_winsize
+    at st_winsize.ws_row, dw 0
+    at st_winsize.ws_col, dw 0
+    at st_winsize.ws_xpixel, dw 0
+    at st_winsize.ws_ypixel, dw 0
+  iend
+
+; winsize resb st_winsize_size
 
 
 section .rodata
@@ -35,14 +43,18 @@ _start
   mov rdx, str_width_len
   sys_write
 
-  print_uint [winsize + st_winsize.ws_col] ; ws_col
+  mov r8, [winsize + st_winsize.ws_col]
+
+  print_uint 2, r8
   print_newline
 
   mov rsi, str_height
   mov rdx, str_height_len
   sys_write
 
-  print_uint [winsize + st_winsize.ws_row] ; ws_row
+  mov r9, [winsize + st_winsize.ws_row]
+
+  print_uint 2, r9
   print_newline
 
   sys_exit 0
