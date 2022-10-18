@@ -1,16 +1,16 @@
-FD_STDIN equ 0
-FD_STDOUT equ 1
-FD_STDERR equ 2
+%define SYS_READ 0
+%define SYS_WRITE 1
+%define SYS_EXIT 60
 
-SYS_READ equ 0
-SYS_WRITE equ 1
-SYS_EXIT equ 60
+%define FD_STDIN 0
+%define FD_STDOUT 1
+%define FD_STDERR 2
 
 
 section .rodata
   newline db 10
-  seq_clear db 0x1b, "[H", 0x1b, "[J" ; https://stackoverflow.com/a/50482672
-  seq_clear_len equ $ - seq_clear
+  escseq_clear db 0x1b, "[H", 0x1b, "[J" ; https://stackoverflow.com/a/50482672
+  escseq_clear_len equ $ - escseq_clear
 
 
 %macro sys_exit 1
@@ -253,8 +253,8 @@ section .text
 
 
 %macro term_clear 0
-  mov rsi, seq_clear
-  mov rdx, seq_clear_len
+  mov rsi, escseq_clear
+  mov rdx, escseq_clear_len
   sys_write
 %endmacro
 

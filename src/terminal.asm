@@ -1,10 +1,9 @@
 %include "macros.asm"
 
 
-TIOCGWINSZ equ 0x5413
+%define TIOCGWINSZ 0x5413
 
 
-section .bss
 struc st_winsize
   .ws_row resw 1    ; unsigned short int ws_row;
   .ws_col resw 1    ; unsigned short int ws_col;
@@ -12,6 +11,8 @@ struc st_winsize
   .ws_ypixel resw 1 ; unsigned short int ws_ypixel;
 endstruc
 
+
+section .bss
 winsize resb st_winsize_size
 
 ; winsize
