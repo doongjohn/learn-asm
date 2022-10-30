@@ -24,7 +24,8 @@ winsize resb st_winsize_size
 ;   iend
 
 
-; TODO: get keyboard input and move character
+; TODO: implement non-blocking keyboard input
+; https://github.com/jupyter-xeus/cpp-terminal/blob/master/cpp-terminal/input.cpp
 section .text
 global _start
 
